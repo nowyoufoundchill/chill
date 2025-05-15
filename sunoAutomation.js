@@ -14,13 +14,16 @@ const slugify = (text) =>
     .substring(0, 30);
 
 async function sunoAutomation(prompts) {
+  try {
   await ensureAudioFolder();
+    console.log("🔍 Launching browser...");
 
  const browser = await puppeteer.launch({
   headless: "new",
   executablePath: "/usr/bin/chromium-browser", // Path Railway exposes Chromium under
-  args: ["--no-sandbox", "--disable-setuid-sandbox"],
-});
+  args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu"],
+        console.log("✅ Browser launched successfully");
+    console.log("✅ Browser launched successfully");
 
 
   const page = await browser.newPage();
@@ -29,7 +32,7 @@ async function sunoAutomation(prompts) {
   await page._client().send("Page.setDownloadBehavior", {
     behavior: "allow",
     downloadPath: path.resolve(__dirname, "output", "audio"),
-  });
+      console.log("✅ Browser launched successfully");
 
   // Set login cookie
   await page.setCookie({
@@ -39,7 +42,7 @@ async function sunoAutomation(prompts) {
     path: "/",
     httpOnly: true,
     secure: true,
-  });
+      console.log("✅ Browser launched successfully");
 
   console.log("✅ Logged into Suno with session");
 
@@ -54,7 +57,7 @@ async function sunoAutomation(prompts) {
 
       await page.goto("https://suno.com/create?wid=default", {
         waitUntil: "networkidle2",
-      });
+          console.log("✅ Browser launched successfully");
 
       // Toggle "Instrumental"
       const toggle = await page.$x("//div[contains(text(), 'Instrumental')]");
@@ -89,11 +92,11 @@ async function sunoAutomation(prompts) {
       // Open library to find the track
       await page.goto("https://suno.com/library?liked=true", {
         waitUntil: "networkidle2",
-      });
+          console.log("✅ Browser launched successfully");
 
       // XPath to the correct 3-dot menu for this track
       const xpath = `//div[contains(text(), '${songTitle}')]//ancestor::div[contains(@class, 'chakra-card')]//button[contains(@class, 'chakra-menu__menu-button')]`;
-      await page.waitForXPath(xpath, { timeout: 60000 });
+      await page.waitForXPath(xpath, { timeout: 60000     console.log("✅ Browser launched successfully");
       const [menuBtn] = await page.$x(xpath);
       if (menuBtn) {
         await menuBtn.click();
