@@ -39,7 +39,7 @@ async function sunoAutomation(prompts) {
     secure: true,
   });
 
-  await page.goto("https://suno.com", { waitUntil: "networkidle2" });
+  await page.goto("https://suno.com/create?wid=default", { waitUntil: "networkidle2" });
   console.log("Logged in with session cookie");
 
   let trackCounter = 1;
@@ -48,8 +48,10 @@ async function sunoAutomation(prompts) {
     console.log(`Generating tracks for prompt: ${prompt}`);
     await page.goto("https://suno.com/create", { waitUntil: "networkidle2" });
 
-    await page.waitForSelector("#prompt-input", { timeout: 10000 });
-    await page.type("#prompt-input", prompt);
+    await page.click('div:has-text("Instrumental")');
+
+    await page.waitForSelector('textarea[placeholder="Enter style description"]');
+    await page.type('textarea[placeholder="Enter style description"]', yourPrompt);
 
     await page.click("#generate-button");
 
