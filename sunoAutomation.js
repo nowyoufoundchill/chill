@@ -1,0 +1,1 @@
+// Puppeteer Suno script placeholder

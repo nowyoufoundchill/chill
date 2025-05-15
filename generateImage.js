@@ -1,0 +1,1 @@
+// Stability AI call placeholder
