@@ -45,39 +45,44 @@ async function sunoAutomation(prompts) {
   let trackCounter = 1;
 
   for (const prompt of prompts) {
-    console.log(`Generating tracks for prompt: ${prompt}`);
-    await page.goto("https://suno.com/create", { waitUntil: "networkidle2" });
+    console.log(`🎼 Generating tracks for prompt: ${prompt}`);
+    
+    await page.goto("https://suno.com/create?wid=default", { waitUntil: "networkidle2" });
 
-    await page.click('div:has-text("Instrumental")');
+    // Toggle the Instrumental switch ON
+    const toggle = await page.$x("//div[contains(text(), 'Instrumental')]");
+    if (toggle.length > 0) {
+      await toggle[0].click();
+      console.log("🎛️ Instrumental mode toggled ON");
+    }
 
-    await page.waitForSelector('textarea[placeholder="Enter style description"]');
-    await page.type('textarea[placeholder="Enter style description"]', yourPrompt);
+    // Wait for the style input and type prompt
+    await page.waitForSelector('textarea[placeholder="Enter style description"]', { timeout: 15000 });
+    await page.type('textarea[placeholder="Enter style description"]', prompt);
 
     await page.click("#generate-button");
 
-    // Wait for at least two download buttons
+    // Wait for track downloads
     await page.waitForSelector(".download-button", { timeout: 180000 });
 
     const downloadLinks = await page.$$eval(".download-button", (links) =>
       links.map((el) => el.href).filter((href) => href.endsWith(".mp3"))
     );
 
-    // Only get the first 2 tracks per prompt
     const twoLinks = downloadLinks.slice(0, 2);
 
     for (const link of twoLinks) {
       const filename = path.join(__dirname, "output", "audio", `track${trackCounter}.mp3`);
-      console.log(`Downloading track${trackCounter}: ${link}`);
+      console.log(`⬇️ Downloading track${trackCounter}: ${link}`);
       await downloadFile(link, filename);
       trackCounter++;
     }
 
-    // Small delay between prompts
     await page.waitForTimeout(3000);
   }
 
   await browser.close();
-  console.log("Suno automation complete. All tracks downloaded.");
+  console.log("✅ Suno automation complete. All tracks downloaded.");
 }
 
 module.exports = sunoAutomation;
