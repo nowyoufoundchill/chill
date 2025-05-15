@@ -6,7 +6,7 @@ const generateImage = require("./generateImage");
 const createVideo = require("./createVideo");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 app.use(bodyParser.json());
 
