@@ -16,10 +16,12 @@ const slugify = (text) =>
 async function sunoAutomation(prompts) {
   await ensureAudioFolder();
 
-  const browser = await puppeteer.launch({
-    headless: "new",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
+ const browser = await puppeteer.launch({
+  headless: "new",
+  executablePath: "/usr/bin/chromium-browser", // Path Railway exposes Chromium under
+  args: ["--no-sandbox", "--disable-setuid-sandbox"],
+});
+
 
   const page = await browser.newPage();
 
