@@ -1,32 +1,33 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const dotenv = require("dotenv");
 
 const sunoAutomation = require("./sunoAutomation");
 const mergeAudioFiles = require("./mergeAudio");
 const generateImage = require("./generateImage");
 const createVideo = require("./createVideo");
 
+dotenv.config();
+
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
 app.post("/", async (req, res) => {
   const { prompts, imagePrompt } = req.body;
 
-  // ✅ Validate audio prompts
   if (!Array.isArray(prompts) || prompts.length < 5) {
-    return res.status(400).json({ error: "Request must contain at least 5 audio prompts." });
+    return res.status(400).json({ error: "You must provide 5 audio prompts." });
   }
 
-  // ✅ Validate image prompt
-  if (typeof imagePrompt !== "string" || imagePrompt.trim() === "") {
+  if (typeof imagePrompt !== "string" || !imagePrompt.trim()) {
     return res.status(400).json({ error: "Missing or invalid imagePrompt." });
   }
 
   try {
     console.log("🚀 Starting NowYouFoundChill automation pipeline...");
-    console.log("🎧 Audio prompts:", prompts);
+    console.log("🎧 Prompts:", prompts);
     console.log("🖼️ Image prompt:", imagePrompt);
 
     await sunoAutomation(prompts);
@@ -34,10 +35,10 @@ app.post("/", async (req, res) => {
     await generateImage(imagePrompt);
     await createVideo();
 
-    res.status(200).json({ status: "success", message: "Video created successfully." });
+    res.status(200).json({ status: "success", message: "Video created!" });
   } catch (error) {
     console.error("💥 Pipeline failed:", error);
-    res.status(500).json({ error: "Pipeline failed. Check logs for details." });
+    res.status(500).json({ error: "Pipeline failed. See logs for details." });
   }
 });
 
