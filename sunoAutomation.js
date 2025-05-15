@@ -1,4 +1,4 @@
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-core"); // Changed from puppeteer to puppeteer-core
 const fs = require("fs");
 const path = require("path");
 const { ensureAudioFolder } = require("./utils/fileHelpers");
